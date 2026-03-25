@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vanilla Miel — Internal Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream: #faf6f0;
+      --warm-white: #fdf9f4;
+      --gold: #c9a96e;
+      --gold-light: #e8d5b0;
+      --brown-deep: #2c1a0e;
+      --brown-mid: #5c3d2e;
+      --brown-light: #8b6251;
+      --rose: #d4817a;
+      --rose-light: #f0cbc8;
+      --text-primary: #2c1a0e;
+      --text-secondary: #7a5c4a;
+      --border: #e8d9ca;
+      --sidebar-width: 220px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--cream);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ── Announcement Banner ── */
+    .announcement-bar {
+      background: var(--brown-deep);
+      color: var(--gold-light);
+      text-align: center;
+      padding: 9px 20px;
+      font-size: 12px;
+      font-family: 'Jost', sans-serif;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .announcement-bar a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 1px;
+      cursor: pointer;
+    }
+    .announcement-bar a:hover { opacity: 0.8; }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      min-height: calc(100vh - 37px);
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--warm-white);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 37px;
+      height: calc(100vh - 37px);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand {
+      padding: 28px 20px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      background: var(--brown-deep);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .brand-logo svg { width: 24px; height: 24px; }
+    .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--brown-deep);
+      line-height: 1.2;
+    }
+    .brand-subtitle {
+      font-size: 10px;
+      color: var(--text-secondary);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .sidebar-nav {
+      padding: 16px 0;
+      flex: 1;
+    }
+    .nav-item {
+      display: block;
+      padding: 9px 20px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 2px solid transparent;
+      letter-spacing: 0.3px;
+    }
+    .nav-item:hover {
+      color: var(--brown-deep);
+      background: var(--cream);
+      border-left-color: var(--gold-light);
+    }
+    .nav-item.active {
+      color: var(--brown-deep);
+      font-weight: 600;
+      background: var(--cream);
+      border-left-color: var(--gold);
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Main Content ── */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    /* ── Page ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Page Hero ── */
+    .page-hero {
+      background: var(--brown-deep);
+      padding: 48px 48px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a96e' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .page-hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--cream);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      position: relative;
+    }
+    .page-hero-line {
+      width: 60px;
+      height: 1px;
+      background: var(--gold);
+      margin-top: 14px;
+      position: relative;
+    }
+    .page-hero-sub {
+      color: var(--gold-light);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      margin-top: 8px;
+      font-weight: 300;
+      position: relative;
+    }
+
+    /* ── Section Wrapper ── */
+    .section-wrapper {
+      padding: 36px 48px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--brown-deep);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .section-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    /* ── Home Page ── */
+    .home-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .home-section {
+      padding: 36px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .home-section:nth-child(odd) { border-right: 1px solid var(--border); }
+
+    /* Calendar embed placeholder */
+    .calendar-embed {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      height: 340px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--text-secondary);
+    }
+    .calendar-embed svg { opacity: 0.3; }
+    .calendar-embed p { font-size: 12px; letter-spacing: 0.5px; }
+    .calendar-embed code {
+      font-size: 10px;
+      background: var(--border);
+      padding: 4px 8px;
+      border-radius: 2px;
+      color: var(--brown-mid);
+    }
+
+    /* Holiday table */
+    .holiday-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .holiday-table th {
+      background: var(--brown-deep);
+      color: var(--gold-light);
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: 500;
+      letter-spacing: 1px;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+    .holiday-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+    .holiday-table tr:hover td { background: var(--cream); }
+    .holiday-table tr.unpaid td { background: #fdf0ee; }
+    .unpaid-badge {
+      font-size: 9px;
+      background: var(--rose);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 2px;
+      letter-spacing: 0.5px;
+      margin-left: 6px;
+    }
+
+    /* ── Quick Links (Employee Section) ── */
+    .quick-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .quick-link-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .quick-link-item:hover {
+      background: var(--cream);
+      border-color: var(--gold-light);
+      transform: translateX(4px);
+    }
+    .ql-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--brown-mid);
+    }
+    .ql-label {
+      font-size: 13.5px;
+      color: var(--brown-deep);
+      font-weight: 500;
+    }
+    .ql-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .ql-arrow {
+      margin-left: auto;
+      color: var(--gold);
+      font-size: 16px;
+    }
+
+    /* Drive PDF buttons */
+    .drive-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .drive-btn {
+      display: block;
+      background: var(--rose);
+      color: white;
+      text-align: center;
+      padding: 11px 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      border-radius: 2px;
+    }
+    .drive-btn:hover { background: var(--brown-mid); }
+
+    /* ── Employee Portal Grid ── */
+    .portal-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .portal-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 24px;
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .portal-item:hover {
+      background: var(--cream);
+      border-color: var(--gold);
+    }
+    .portal-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brown-mid);
+      flex-shrink: 0;
+    }
+    .portal-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--brown-deep);
+    }
+    .portal-desc {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+    .portal-arrow {
+      margin-left: auto;
+      color: var(--gold);
+      font-size: 20px;
+    }
+
+    /* ── Department Cards ── */
+    .dept-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .dept-card {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .dept-card-header {
+      background: var(--brown-deep);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .dept-card-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(201,169,110,0.2);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+    }
+    .dept-card-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--cream);
+      letter-spacing: 0.5px;
+    }
+    .dept-card-body { padding: 14px 18px; }
+    .dept-file-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--brown-mid);
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .dept-file-link:last-child { border-bottom: none; }
+    .dept-file-link:hover { color: var(--gold); }
+    .file-type-badge {
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 2px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+    .badge-pdf { background: #ffe8e8; color: #c0392b; }
+    .badge-sheet { background: #e8f5e9; color: #2e7d32; }
+    .badge-form { background: #e8f0fe; color: #1a73e8; }
+    .badge-flow { background: #fff3e0; color: #e65100; }
+
+    /* ── FAQs ── */
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-question {
+      padding: 18px 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--brown-deep);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .faq-question:hover { color: var(--gold); }
+    .faq-toggle {
+      color: var(--gold);
+      font-size: 20px;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .faq-answer {
+      display: none;
+      padding: 0 0 18px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold-light); }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .section-wrapper, .home-section { padding: 24px 20px; }
+      .page-hero { padding: 32px 20px; }
+      .home-grid { grid-template-columns: 1fr; }
+      .dept-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Announcement Banner -->
+<div class="announcement-bar">
+  📢 &nbsp;<a onclick="showPage('faqs')">Latest Update — View Announcements & Help Center →</a>
+</div>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3C9 3 6 5.5 6 9c0 2.5 1.5 4.5 3.5 5.5L9 20h6l-.5-5.5C16.5 13.5 18 11.5 18 9c0-3.5-3-6-6-6z" stroke="#c9a96e" stroke-width="1.2" fill="none"/>
+          <path d="M10 20h4" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-name">Vanilla Miel</div>
+      <div class="brand-subtitle">Internal Portal</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active" onclick="showPage('home')">Home</a>
+      <a class="nav-item" onclick="showPage('employee-section')">Common Employee Section</a>
+      <a class="nav-item" onclick="showPage('management')">Management Section</a>
+      <a class="nav-item" onclick="showPage('employee-portal')">Employee Portal</a>
+      <a class="nav-item" onclick="showPage('accounts')">Accounts Section</a>
+      <a class="nav-item" onclick="showPage('admin')">Admin Section</a>
+      <a class="nav-item" onclick="showPage('kitchen')">Kitchen & Production</a>
+      <a class="nav-item" onclick="showPage('retail')">Retail & Café</a>
+      <a class="nav-item" onclick="showPage('marketing')">Marketing Section</a>
+      <a class="nav-item" onclick="showPage('mis')">MIS Reporting</a>
+      <a class="nav-item" onclick="showPage('faqs')">FAQs / Help Center</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      Made with ♥ · Vanilla Miel LLP
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ═══════════════════════════════
+         HOME PAGE
+    ═══════════════════════════════ -->
+    <div id="page-home" class="page active">
+      <div class="page-hero" style="background: var(--brown-deep);">
+        <div class="page-hero-title">Welcome Home</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Vanilla Miel LLP · Internal Staff Portal</div>
+      </div>
+
+      <div class="home-grid">
+        <!-- Calendar -->
+        <div class="home-section">
+          <div class="section-title">Company Calendar</div>
+          <div class="section-desc">Meetings, festivals, and key dates — switch to Week or Month view for best experience</div>
+          <div class="calendar-embed">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+            <p>Paste your Google Calendar embed code here</p>
+            <code>&lt;!-- Replace with Google Calendar iframe --&gt;</code>
+          </div>
+        </div>
+
+        <!-- Holiday List -->
+        <div class="home-section">
+          <div class="section-title">Holiday List</div>
+          <div class="section-desc">Current year — highlighted rows indicate unpaid leaves</div>
+          <table class="holiday-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Day</th>
+                <th>Holiday</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>01/01/2026</td><td>Thursday</td><td>New Year's Day</td></tr>
+              <tr><td>2</td><td>26/01/2026</td><td>Monday</td><td>Republic Day</td></tr>
+              <tr><td>3</td><td>04/03/2026</td><td>Wednesday</td><td>Dhuleti Day</td></tr>
+              <tr class="unpaid"><td>4</td><td>19/03/2026</td><td>Thursday</td><td>Gudi Padwa <span class="unpaid-badge">UL</span></td></tr>
+              <tr><td>5</td><td>01/05/2026</td><td>Friday</td><td>Maharashtra Day</td></tr>
+              <tr><td>6</td><td>15/08/2026</td><td>Saturday</td><td>Independence Day</td></tr>
+              <tr><td>7</td><td>02/10/2026</td><td>Friday</td><td>Gandhi Jayanti</td></tr>
+              <tr class="unpaid"><td>8</td><td>20/10/2026</td><td>Tuesday</td><td>Diwali <span class="unpaid-badge">UL</span></td></tr>
+              <tr><td>9</td><td>25/12/2026</td><td>Friday</td><td>Christmas Day</td></tr>
+            </tbody>
+          </table>
+          <div style="font-size:10px; color:var(--text-secondary); margin-top:8px; font-style:italic;">
+            UL = Unpaid Leave · <a href="#" style="color:var(--gold);">View Full Sheet ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         COMMON EMPLOYEE SECTION
+    ═══════════════════════════════ -->
+    <div id="page-employee-section" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">Common Employee</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">One-click access to all shared tools & resources</div>
+      </div>
+
+      <div class="section-wrapper">
+        <div class="section-title">Quick Access Links</div>
+        <div class="section-desc">Forms, sheets, and tools available to all staff</div>
+
+        <div class="quick-links">
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+            </div>
+            <div>
+              <div class="ql-label">Leave Application Form</div>
+              <div class="ql-desc">Submit leave requests via Google Form</div>
+            </div>
+            <span class="ql-arrow">→</span>
+          </a>
+
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div>
+              <div class="ql-label">HRMS Portal</div>
+              <div class="ql-desc">HR Management System — attendance, payroll, records</div>
+            </div>
+            <span class="ql-arrow">→</span>
+          </a>
+
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            <div>
+              <div class="ql-label">Urgent Payment Form</div>
+              <div class="ql-desc">Request urgent or out-of-cycle payments</div>
+            </div>
+            <span class="ql-arrow">→</span>
+          </a>
+
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 11.5 19.36 19.36 0 0 1 1.64 2.9 2 2 0 0 1 3.61 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+              <div class="ql-label">Extension Numbers (Mumbai Office)</div>
+              <div class="ql-desc">Internal phone directory — Saki Naka HQ</div>
+            </div>
+            <span class="ql-arrow">→</span>
+          </a>
+
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div class="ql-label">Board Resolution Google Form</div>
+              <div class="ql-desc">Submit board resolution requests</div>
+            </div>
+            <span class="ql-arrow">→</span>
+          </a>
+
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="ql-label">Bulk Mail — PDF Names Tool</div>
+              <div class="ql-desc">Generate & send bulk communications using PDF names</div>
+            </div>
+            <span class="ql-arrow">→</span>
+          </a>
+        </div>
+
+        <div style="margin-top: 36px;">
+          <div class="section-title">Additional Resources</div>
+          <div class="section-desc">Company documents hosted on Google Drive</div>
+          <div class="drive-btns">
+            <a class="drive-btn" href="#" target="_blank">📄 Employee Handbook — Mumbai Office</a>
+            <a class="drive-btn" href="#" target="_blank">📁 LA Document Filing</a>
+            <a class="drive-btn" href="#" target="_blank">📋 Company Policies & SOPs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         MANAGEMENT SECTION
+    ═══════════════════════════════ -->
+    <div id="page-management" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">Management</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Leadership tools, reports & strategic documents</div>
+      </div>
+      <div class="section-wrapper">
+        <div class="section-title">Management Resources</div>
+        <div class="section-desc">Restricted to management and designated personnel</div>
+        <div class="quick-links">
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg></div>
+            <div><div class="ql-label">Management Dashboard</div><div class="ql-desc">Key metrics, KPIs & performance overview</div></div>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+            <div><div class="ql-label">Monthly P&L Report</div><div class="ql-desc">Profit & Loss statements — current fiscal year</div></div>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+            <div><div class="ql-label">Meeting Notes Archive</div><div class="ql-desc">All management meeting minutes</div></div>
+            <span class="ql-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         EMPLOYEE PORTAL
+    ═══════════════════════════════ -->
+    <div id="page-employee-portal" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">Employee Portal</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Staff directories, task sheets & documents by location</div>
+      </div>
+      <div class="section-wrapper">
+        <div class="section-title">Offices & Teams</div>
+        <div class="section-desc">Select your office or department to access staff details and task sheets</div>
+        <div class="portal-grid">
+          <a class="portal-item" href="#" target="_blank">
+            <div class="portal-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+            </div>
+            <div>
+              <div class="portal-name">Mumbai HQ Kitchen</div>
+              <div class="portal-desc">Saki Naka — Production, Pastry & Chocolate teams</div>
+            </div>
+            <span class="portal-arrow">→</span>
+          </a>
+          <a class="portal-item" href="#" target="_blank">
+            <div class="portal-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 3H8v4h8V3z"/></svg>
+            </div>
+            <div>
+              <div class="portal-name">Management & Directors</div>
+              <div class="portal-desc">Mansi, Isha & leadership team documents</div>
+            </div>
+            <span class="portal-arrow">→</span>
+          </a>
+          <a class="portal-item" href="#" target="_blank">
+            <div class="portal-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8v4h8V3z"/></svg>
+            </div>
+            <div>
+              <div class="portal-name">Accounts & Finance</div>
+              <div class="portal-desc">Finance team staff & document sheets</div>
+            </div>
+            <span class="portal-arrow">→</span>
+          </a>
+          <a class="portal-item" href="#" target="_blank">
+            <div class="portal-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><path d="M3 9l2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/><path d="M12 3v6"/></svg>
+            </div>
+            <div>
+              <div class="portal-name">Retail & Café</div>
+              <div class="portal-desc">Front-of-house staff, café team & Andheri outlet</div>
+            </div>
+            <span class="portal-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         ACCOUNTS
+    ═══════════════════════════════ -->
+    <div id="page-accounts" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">Accounts</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Finance, billing & payment records</div>
+      </div>
+      <div class="section-wrapper">
+        <div class="section-title">Accounts Resources</div>
+        <div class="section-desc">Financial documents, invoices & billing tools</div>
+        <div class="dept-cards">
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+              <div class="dept-card-name">Billing & Invoices</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Invoice Tracker — FY2026</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> GST Filing Documents</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-form">FORM</span> Vendor Payment Request</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Expense Tracker</a>
+            </div>
+          </div>
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+              <div class="dept-card-name">Payroll</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Payroll Sheet — March 2026</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Salary Slips Archive</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-form">FORM</span> Salary Advance Request</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         ADMIN
+    ═══════════════════════════════ -->
+    <div id="page-admin" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">Admin Section</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Operations, compliance & administrative resources</div>
+      </div>
+      <div class="section-wrapper">
+        <div class="section-title">Admin Resources</div>
+        <div class="section-desc">Internal admin forms, vendor lists & compliance documents</div>
+        <div class="dept-cards">
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>
+              <div class="dept-card-name">Operations</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> FSSAI License</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Vendor Master List</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-form">FORM</span> Procurement Request Form</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Office Lease Agreement</a>
+            </div>
+          </div>
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+              <div class="dept-card-name">Compliance</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Company Registration</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> LLP Agreement</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Compliance Calendar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         KITCHEN & PRODUCTION
+    ═══════════════════════════════ -->
+    <div id="page-kitchen" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">Kitchen & Production</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Recipes, production sheets, flowcharts & SOPs</div>
+      </div>
+      <div class="section-wrapper">
+        <div class="section-title">Production Resources</div>
+        <div class="section-desc">Pastry, chocolate & production documentation</div>
+        <div class="dept-cards">
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+              <div class="dept-card-name">Pastry & Entremets</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Master Recipe Book</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-flow">FLOW</span> Production Flowchart</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Daily Production Sheet</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Allergen & Ingredient List</a>
+            </div>
+          </div>
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+              <div class="dept-card-name">Chocolaterie</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Chocolate Sourcing Guide</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Chocolate Inventory Log</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-flow">FLOW</span> Tempering SOP Flowchart</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         RETAIL & CAFÉ
+    ═══════════════════════════════ -->
+    <div id="page-retail" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">Retail & Café</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Store operations, sales tracking & café management</div>
+      </div>
+      <div class="section-wrapper">
+        <div class="section-title">Retail Projects & Tools</div>
+        <div class="section-desc">Add projects under each retail area along with related files, flowcharts, and PDFs</div>
+        <div class="dept-cards">
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><path d="M3 9l2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/></svg></div>
+              <div class="dept-card-name">Retail Shop Analytics</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Business Analytics — Detail Explanation</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Retail Store Google Sheet</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Register Cleaner Sheet</a>
+            </div>
+          </div>
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+              <div class="dept-card-name">Expenses Tracker</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-flow">FLOW</span> Expense Flow Chart — PNG</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Expenses Google Sheet</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-form">FORM</span> Expense Submission Form</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         MARKETING
+    ═══════════════════════════════ -->
+    <div id="page-marketing" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">Marketing</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Brand assets, campaigns & digital content</div>
+      </div>
+      <div class="section-wrapper">
+        <div class="section-title">Marketing Resources</div>
+        <div class="section-desc">Brand guidelines, campaign trackers and content calendars</div>
+        <div class="dept-cards">
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26 12,2"/></svg></div>
+              <div class="dept-card-name">Brand Assets</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Brand Guidelines</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Logo Pack — All Formats</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Content Calendar 2026</a>
+            </div>
+          </div>
+          <div class="dept-card">
+            <div class="dept-card-header">
+              <div class="dept-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></div>
+              <div class="dept-card-name">Social & Campaigns</div>
+            </div>
+            <div class="dept-card-body">
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-sheet">SHEET</span> Campaign Tracker</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-form">FORM</span> Campaign Brief Submission</a>
+              <a class="dept-file-link" href="#"><span class="file-type-badge badge-pdf">PDF</span> Photography Guidelines</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         MIS REPORTING
+    ═══════════════════════════════ -->
+    <div id="page-mis" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">MIS Reporting</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Management information, analytics & reporting dashboards</div>
+      </div>
+      <div class="section-wrapper">
+        <div class="section-title">Reports & Dashboards</div>
+        <div class="section-desc">Centralised business intelligence and reporting tools</div>
+        <div class="quick-links">
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+            <div><div class="ql-label">Monthly MIS Report</div><div class="ql-desc">Comprehensive monthly business summary</div></div>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+            <div><div class="ql-label">Sales Dashboard</div><div class="ql-desc">Real-time Shopify & retail sales overview</div></div>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a class="quick-link-item" href="#" target="_blank">
+            <div class="ql-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div><div class="ql-label">Order Analytics</div><div class="ql-desc">Delivery, pickup & catering order reports</div></div>
+            <span class="ql-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         FAQS / HELP CENTER
+    ═══════════════════════════════ -->
+    <div id="page-faqs" class="page">
+      <div class="page-hero">
+        <div class="page-hero-title">FAQs / Help Center</div>
+        <div class="page-hero-line"></div>
+        <div class="page-hero-sub">Answers to daily questions — submit a ticket for new issues</div>
+      </div>
+      <div class="section-wrapper">
+        <div class="section-title">Common Questions</div>
+        <div class="section-desc">Click a question to expand the answer. Can't find what you need? Submit a help ticket.</div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">How do I apply for a leave? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">Go to the <strong>Common Employee Section</strong> and click <em>Leave Application Form</em>. Fill in your details, select the dates, and submit. Your manager will be notified automatically. You should receive a confirmation within 1 working day.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">Where do I find my salary slip? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">Salary slips are archived under <strong>Accounts Section → Payroll → Salary Slips Archive</strong>. If your slip is missing, contact the Accounts team via the extension directory.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">How do I request an urgent payment or reimbursement? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">Use the <strong>Urgent Payment Form</strong> in the Common Employee Section. Include the amount, reason, and attach any supporting invoices. Payments are processed within 2 working days after approval.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">What are the delivery timings for Mumbai orders? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">All deliveries are made in the second half of the chosen date — between <strong>3:30 PM and 9:30 PM</strong> IST via our personal staff. This is a route-based system. Minimum order value for delivery is ₹1,200. Anything below that requires a pickup from our Saki Naka kitchen.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">Who do I contact for IT or portal issues? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">For any issues with this portal, Google Workspace access, or internal tools — please submit a Help Ticket using the form below, or contact the MIS team directly via the extension numbers listed in the Common Employee Section.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">Where can I find company policies and the employee handbook? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">All policy documents are in the <strong>Common Employee Section → Additional Resources</strong>. The Employee Handbook (Mumbai Office) covers HR policies, code of conduct, and kitchen safety protocols.</div>
+        </div>
+
+        <div style="margin-top: 32px;">
+          <div class="section-title">Submit a Help Ticket</div>
+          <div class="section-desc">Can't find the answer above? Let the team know.</div>
+          <a class="drive-btn" href="#" style="display:inline-block; text-decoration:none; padding: 13px 32px;">🎫 Submit a Help Ticket</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    const page = document.getElementById('page-' + id);
+    if (page) page.classList.add('active');
+
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+      if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + id + "'")) {
+        item.classList.add('active');
+      }
+    });
+
+    document.querySelector('.main').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleFaq(el) {
+    el.parentElement.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
